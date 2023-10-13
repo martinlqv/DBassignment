@@ -23,6 +23,28 @@ public class SignUp {
         String newPassword = scanner.nextLine();
         newUser.setPassword(newPassword);
 
+        // Prompt the user to enter their given name
+        System.out.println("Enter your given name:");
+        String newName = scanner.nextLine();
+        newUser.setName(newName);
+
+        // Prompt the user to enter their surname
+        System.out.println("Enter your surname:");
+        String newSurname = scanner.nextLine();
+        newUser.setSurname(newSurname);
+
+        // Prompt the user to enter their email
+        System.out.println("Enter your email address");
+        String newEmail = scanner.nextLine();
+        newUser.setEmail(newEmail);
+
+        // Prompt the user to enter their date of birth
+        System.out.println("Enter your date of birth in the format xxxx-xx-xx");
+        String newDateOfBirth = scanner.nextLine();
+        newUser.setDateOfBirth(newDateOfBirth);
+
+
+
         DataBaseEngine.addUser(newUser);
 
 

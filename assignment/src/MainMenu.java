@@ -43,7 +43,7 @@ public class MainMenu {
             //LogIn.logInMenu(); // Displaying all the books
             displayMenu(); // Returning to the main menu
         } else if(menuNavigation == 2) {
-            //SignUp.addUser(); // Adding a new book
+            SignUp.signUpMenu(); // Adding a new book
             displayMenu(); // Returning to the main menu
         } else{
             System.exit(0); // Exiting the program

@@ -19,7 +19,8 @@ public class MainMenu {
                     "Welcome to Portfolio Manager\n" +
                             "1. Log in\n" +
                             "2. Sign up\n" +
-                            "3. Exit"
+                            "3. Exit" +
+                            "4. Go Red Sox"
             );
             try {
                 // Getting the users menu choice

@@ -10,6 +10,7 @@ public class SignUp {
     public static void signUpMenu(){
 
 
+
         User newUser = new User();
 
         // Prompt the user to enter a username
@@ -21,6 +22,10 @@ public class SignUp {
         System.out.println("Enter a password:");
         String newPassword = scanner.nextLine();
         newUser.setPassword(newPassword);
+
+        DataBaseEngine.addUser(newUser);
+
+
 
     }
 

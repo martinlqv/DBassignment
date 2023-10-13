@@ -19,8 +19,7 @@ public class MainMenu {
                     "Welcome to Portfolio Manager\n" +
                             "1. Log in\n" +
                             "2. Sign up\n" +
-                            "3. Exit" +
-                            "4. Go Red Sox"
+                            "3. Exit"
             );
             try {
                 // Getting the users menu choice
@@ -47,6 +46,7 @@ public class MainMenu {
             SignUp.signUpMenu(); // Adding a new book
             displayMenu(); // Returning to the main menu
         } else{
+            DataBaseEngine.abortConnection();
             System.exit(0); // Exiting the program
         }
 

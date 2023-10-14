@@ -161,14 +161,14 @@ public class DataBaseEngine {
     // Method to add portfolio to database
     public static void Addportfolio(Portfolio portfolio) {
 
-        // Define the SQL query to insert a new portfolio.
+        // Define the SQL query to insert a new portfolio, any name.
         String sqlCode = """
     INSERT INTO Portfolios (portfolio_name, description, total_value, username)
     VALUES (?, ?, ?, ?);
     """;
 
-        Statement statement = null; // Declare a Statement object to null
 
+        Statement statement = null;
         // Use try-with-resources to automatically close PreparedStatement.
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
             // Set the placeholders in the SQL query with actual values.
@@ -193,8 +193,6 @@ public class DataBaseEngine {
             }
         }
     }
-
-
 
 
 

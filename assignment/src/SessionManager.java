@@ -1,5 +1,6 @@
 public class SessionManager {
-    // Static variable to hold the username of the current logged-in user
+
+    // Static var holds the username of the currently logged in user
     private static String currentUsername;
 
     // Method to set the current username
@@ -12,7 +13,7 @@ public class SessionManager {
         return currentUsername;
     }
 
-    // Method to log out the current user (clear the username)
+    // Method to log out the current user (clear username)
     public static void logOut() {
         currentUsername = null;
     }

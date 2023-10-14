@@ -48,13 +48,10 @@ public class PortfolioMenu {
 
         // Handling user's menu choice
         if(menuNavigation == 1){
+
             // Call method to create a portfolio
-            //System.out.println("Under Construction");
-
-
             Addportfolio.addPortfolioMenu();
-            displayPortfolioMenu();
-
+            displayPortfolioMenu(); //Maybe sub this for immediate portfolio view, and add Assetmenu
 
         } else if(menuNavigation == 2) {
             // Call method to view portfolios
@@ -73,7 +70,7 @@ public class PortfolioMenu {
 
             // Call method to delete a portfolio
             String currentUsername = SessionManager.getCurrentUsername();
-            //System.out.println("Logged in: " + currentUsername);
+            System.out.println("TEST: Logged in: " + currentUsername);
 
             displayPortfolioMenu();
 

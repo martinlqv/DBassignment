@@ -156,4 +156,47 @@ public class DataBaseEngine {
     }
 
 
+
+
+    // Method to add portfolio to database
+    public static void Addportfolio(Portfolio portfolio) {
+
+        // Define the SQL query to insert a new portfolio.
+        String sqlCode = """
+    INSERT INTO Portfolios (portfolio_name, description, total_value, username)
+    VALUES (?, ?, ?, ?);
+    """;
+
+        Statement statement = null; // Declare a Statement object to null
+
+        // Use try-with-resources to automatically close PreparedStatement.
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            // Set the placeholders in the SQL query with actual values.
+            preparedStatement.setString(1, portfolio.getPortfolioName()); // Set portfolio name
+            preparedStatement.setString(2, portfolio.getDescription());  // Set description
+            preparedStatement.setDouble(3, portfolio.getTotalValue());  // Set total value
+            preparedStatement.setString(4, portfolio.getUsername());    // Set username
+
+            // Execute the SQL query to insert the new portfolio
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            // Catch and display any SQL exception that occurs during query execution
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Explicitly close the Statement object if it was opened
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 }

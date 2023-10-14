@@ -39,6 +39,7 @@ public class MainMenu {
                 System.out.println("Please enter a valid integer between 1 and 3");
                 scanner.nextLine();
             }
+
         } while (!validInput);
 
         // Handling user's menu choice
@@ -50,10 +51,14 @@ public class MainMenu {
             SignUp.signUpMenu(); // Adding a new book
             displayMenu(); // Returning to the main menu
         } else{
+            SessionManager.logOut();
+            System.out.println("Logging out");
             DataBaseEngine.abortConnection();
+            System.out.println("\nTake care, bye!");
             System.exit(0); // Exiting the program
-        }
 
+
+        }
 
     }
 

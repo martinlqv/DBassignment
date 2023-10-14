@@ -23,6 +23,7 @@ public class PortfolioMenu {
                             "4. Delete\n" +
                             "5. Exit to Main Menu"
             );
+
             try {
                 // Get users choice
                 menuNavigation = scanner.nextInt();
@@ -48,13 +49,17 @@ public class PortfolioMenu {
         // Handling user's menu choice
         if(menuNavigation == 1){
             // Call method to create a portfolio
-            System.out.println("Under Construction");
+            //System.out.println("Under Construction");
+
+
+            Addportfolio.addPortfolioMenu();
             displayPortfolioMenu();
 
 
         } else if(menuNavigation == 2) {
             // Call method to view portfolios
             System.out.println("Under Construction");
+
             displayPortfolioMenu();
 
         } else if(menuNavigation == 3) {
@@ -67,7 +72,9 @@ public class PortfolioMenu {
         } else if(menuNavigation == 4) {
 
             // Call method to delete a portfolio
-            System.out.println("Under Construction");
+            String currentUsername = SessionManager.getCurrentUsername();
+            //System.out.println("Logged in: " + currentUsername);
+
             displayPortfolioMenu();
 
         } else if(menuNavigation == 5) {

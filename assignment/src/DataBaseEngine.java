@@ -65,11 +65,11 @@ public class DataBaseEngine {
         Statement statement = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
             preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, "Jesper");
-            preparedStatement.setString(3, "Soder");
-            preparedStatement.setString(4, "jesperaterkex@hotmail.com");
+            preparedStatement.setString(2, user.getName());
+            preparedStatement.setString(3, user.getSurname());
+            preparedStatement.setString(4, user.getEmail());
             preparedStatement.setString(5, user.getPassword());
-            preparedStatement.setString(6, "1965-12-24");
+            preparedStatement.setString(6, user.getDataOfBirth());
             preparedStatement.setString(7, user.getUsername());
 
             preparedStatement.executeUpdate();

@@ -28,9 +28,12 @@ public class MainMenu {
                 // Validating the menu choice
                 if (menuNavigation >= 1 && menuNavigation <= 3) {
                     validInput = true;
+
+
                 } else {
                     System.out.println("Please provide a valid input");
                 }
+
             } catch (InputMismatchException ime) {
                 // Handling invalid input e.g., non-integers
                 System.out.println("Please enter a valid integer between 1 and 3");
@@ -40,8 +43,9 @@ public class MainMenu {
 
         // Handling user's menu choice
         if(menuNavigation == 1){
-            //LogIn.logInMenu(); // Displaying all the books
+            LogIn.logInMenu(); // Displaying all the books
             displayMenu(); // Returning to the main menu
+
         } else if(menuNavigation == 2) {
             SignUp.signUpMenu(); // Adding a new book
             displayMenu(); // Returning to the main menu

@@ -8,14 +8,14 @@ public class PortfolioMenu {
 
     public static void displayPortfolioMenu() {
 
-        // Declaring and initialising variables that will be used in the next loop to check if the input is valid.
+        // Declaring and initialising the vars used in the next loop to check if input valid.
         boolean validInput = false;
         int menuNavigation = 0;
 
-        // Continuously prompting the user until a valid input is received
+        // Continuously prompt user until a valid input is received
         do {
             System.out.println(
-                    // Menu options
+                    // Options
                     "---- Portfolios ----\n" +
                             "1. Create\n" +
                             "2. View\n" +
@@ -24,10 +24,10 @@ public class PortfolioMenu {
                             "5. Exit to Main Menu"
             );
             try {
-                // Getting the users menu choice
+                // Get users choice
                 menuNavigation = scanner.nextInt();
 
-                // Validating the menu choice
+                // Validate menu choice
                 if (menuNavigation >= 1 && menuNavigation <= 5) {
                     validInput = true;
 
@@ -38,7 +38,7 @@ public class PortfolioMenu {
 
             } catch (InputMismatchException ime) {
                 // Handling invalid input e.g., non-integers
-                System.out.println("Please enter a valid integer between 1 and 3");
+                System.out.println("Please enter a valid integer between 1 and 5");
                 scanner.nextLine();
             }
         } while (!validInput);
@@ -79,7 +79,6 @@ public class PortfolioMenu {
             DataBaseEngine.abortConnection();
             System.exit(0); // Exiting the program
         }
-
 
     }
 

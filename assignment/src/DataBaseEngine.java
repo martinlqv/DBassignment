@@ -108,32 +108,46 @@ public class DataBaseEngine {
     public static boolean validateCredentials(String username, String password) {
         Scanner scanner = new Scanner(System.in);  // Initialize a Scanner object for user input
 
-        while (true) {  // Loop until valid credentials are entered or user decides to exit
+        while (true) {  // keep asking for credentials until valid entered or user exits
+
+            // select password from Users table where given username matches username
             String sqlQuery = "SELECT password FROM Users WHERE username = ?";
-            try (PreparedStatement preparedStatement = DataBaseEngine.connection.prepareStatement(sqlQuery)) {
+            try (
+                    PreparedStatement preparedStatement = DataBaseEngine.connection.prepareStatement(sqlQuery)) {
+
+                // Set the first parameter in the SQL query (the '?' abv) to the given username
                 preparedStatement.setString(1, username);
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                try (
+                        ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                    // Check if the ResultSet has any entries (i.e., if the username exists in the database)
                     if (resultSet.next()) {
+                        // Retrieve the password associated with the username from the ResultSet
                         String storedPassword = resultSet.getString("password");
+                        // Check if given password matches stored password
                         if (storedPassword.equals(password)) {
-                            return true;  // Credentials are valid
+                            return true;  // If credentials are valid, exit loop and method, return true
                         }
                     }
                 }
             } catch (SQLException e) {
+                // Catch any SQL exceptions
                 System.err.println("Failed to validate credentials: " + e.getMessage());
-                return false;  // Exit if an exception occurs
+
+                // In case of exception, exit the method, return false
+                return false;
             }
 
-            // Prompt user for new username and password if the previous ones were invalid
+
+        // Prompt user for new username and password if the previous ones were invalid
             System.out.println("Invalid username or password.");
             System.out.println("Do you want to try again? (y/n)");
             String response = scanner.nextLine();
             if ("n".equalsIgnoreCase(response)) {
-                return false;  // Exit if the user chooses not to retry
+                return false;  // Exit if the user chooses not to
             }
 
-            // Ask for new username and password
+            // Ask for username and password again
             System.out.println("Enter your username:");
             username = scanner.nextLine();
             System.out.println("Enter your password:");

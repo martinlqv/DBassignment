@@ -10,11 +10,11 @@ public class LogIn {
         System.out.println("Enter your password:");
         String password = scaner.nextLine();
 
-        // Call some method to validate the credentials
+        // Call method to validate the credentials
         if (DataBaseEngine.validateCredentials(username, password)) {
             System.out.println("Login successful!");
             PortfolioMenu.displayPortfolioMenu();  // Display the portfolio menu upon successful login
-            //return true;
+
         } else {
             System.out.println("Invalid username or password.");
         }

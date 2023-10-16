@@ -4,12 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class DataBaseEngine {
     // Static Connection object to hold the database connection
-    static Connection connection = null;
+    private static Connection connection = null;
+    private static String selectedPortfolioId;
+    private static String selectedPortfolioName;
 
     // Method to establish a database connection
     public static void establishConnection() {
@@ -59,7 +61,7 @@ public class DataBaseEngine {
     }
 
 
-    // Method to add a User object to the database
+    // Method to add a User object to the database ---------------------------------------------------------------------
     public static void addUser(User user) {
         // SQL code for inserting a new user, but only if the username does not already exist
         String sqlCode = """
@@ -100,7 +102,7 @@ public class DataBaseEngine {
 
 
 
-    // Method to validate user credentials against the database
+    // Method to validate user credentials against the database --------------------------------------------------------
     public static boolean validateCredentials(String username, String password) {
         Scanner scanner = new Scanner(System.in);  // Initialize a Scanner object for user input
 
@@ -135,7 +137,7 @@ public class DataBaseEngine {
             }
 
 
-        // Prompt user for new username and password if the previous ones were invalid
+            // Prompt user for new username and password if the previous ones were invalid
             System.out.println("Invalid username or password.");
             System.out.println("Do you want to try again? (y/n)");
             String response = scanner.nextLine();
@@ -154,13 +156,13 @@ public class DataBaseEngine {
 
 
 
-    // Method to add portfolio to database
-    public static void Addportfolio(Portfolio portfolio) {
+    // Method to add portfolio to database -----------------------------------------------------------------------------
+    public static void addPortfolio(Portfolio portfolio) {
 
         // Define the SQL query to insert a new portfolio, any name.
         String sqlCode = """
-                INSERT INTO Portfolios (portfolio_name, description, total_value, username)
-                VALUES (?, ?, ?, ?);
+                INSERT INTO Portfolios (portfolio_name, description, username)
+                VALUES (?, ?, ?);
     """;
 
 
@@ -170,8 +172,8 @@ public class DataBaseEngine {
             // Set the placeholders in the SQL query with actual values.
             preparedStatement.setString(1, portfolio.getPortfolioName()); // Set portfolio name
             preparedStatement.setString(2, portfolio.getDescription());  // Set description
-            preparedStatement.setDouble(3, portfolio.getTotalValue());  // Set total value
-            preparedStatement.setString(4, portfolio.getUsername());    // Set username
+            //preparedStatement.setDouble(3, portfolio.getTotalValue());  // Set total value
+            preparedStatement.setString(3, portfolio.getUsername());    // Set username
 
             // Execute the SQL query to insert the new portfolio
             preparedStatement.executeUpdate();
@@ -204,6 +206,155 @@ public class DataBaseEngine {
         }
         return false; // username does not exist
     }
+
+
+
+
+
+
+
+
+    // Method to select portfolio -----------------------------------------------------------------------------------------
+    public static void selectPortfolio() {
+        String sqlCode = """
+        SELECT portfolio_id, portfolio_name
+        FROM Portfolios
+        WHERE username = ? ;
+        """;
+
+        List<String> portfolioIds = new ArrayList<>();
+        Map<String, String> portfolioNames = new HashMap<>(); // Map to associate each ID with its name
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setString(1, SessionManager.getCurrentUsername());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int counter = 1;
+            while (resultSet.next()) {
+                String portfolioId = resultSet.getString("portfolio_id");
+                String portfolioName = resultSet.getString("portfolio_name");
+
+                portfolioIds.add(portfolioId);
+                portfolioNames.put(portfolioId, portfolioName); // Store the name associated with the ID
+
+                System.out.println(counter + ". " + portfolioId + " " + portfolioName);
+                counter++;
+            }
+
+            if (portfolioIds.isEmpty()) {
+                System.out.println("No portfolios found for the user.");
+                return;
+            }
+
+            System.out.println("Enter the number of the portfolio you want to update:");
+            Scanner scanner = new Scanner(System.in);
+
+            int selectedNumber = -1;
+            while (selectedNumber < 1 || selectedNumber > portfolioIds.size()) {
+                try {
+                    selectedNumber = scanner.nextInt();
+                    if (selectedNumber < 1 || selectedNumber > portfolioIds.size()) {
+                        System.out.println("Invalid number. Please enter a number between 1 and " + portfolioIds.size());
+                    }
+                } catch (InputMismatchException ime) {
+                    System.out.println("Please enter a valid number.");
+                    scanner.nextLine(); // Clearing the invalid input
+                }
+            }
+
+            selectedPortfolioId = portfolioIds.get(selectedNumber - 1);
+            selectedPortfolioName = portfolioNames.get(selectedPortfolioId); // Get the name using the selected ID
+
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
+
+    // Getter methods to fetch the selected values
+    public static int getSelectedPortfolioId() {
+        return Integer.parseInt(selectedPortfolioId);
+    }
+
+    public static String getSelectedPortfolioName() {
+        return selectedPortfolioName;
+    }
+
+    // Add asset ---------------------------------------------------------------------------------------------------
+    public static void addSecurity(Security security) {
+
+        // Define the SQL query to insert a new portfolio, any name.
+        String sqlCode = """
+                INSERT INTO Investment_products (ticker, investment_name, investment_type, risk_level,
+                investment_value, portfolio_id)
+                VALUES (?, ?, ?, ?, ?, ?);
+    """;
+
+
+        Statement statement = null;
+        // Use try-with-resources to automatically close PreparedStatement.
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            // Set the placeholders in the SQL query with actual values.
+            preparedStatement.setString(1, security.getTicker());
+            preparedStatement.setString(2, security.getInvestmentName());
+            preparedStatement.setString(3, security.getInvestmentType());
+            preparedStatement.setString(4, security.getRiskLevel());
+            preparedStatement.setDouble(5, security.getInvestmentValue());
+            preparedStatement.setDouble(6, security.getPortfolioId());
+
+            // Execute the SQL query to insert the new portfolio
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            // Catch and display any SQL exception that occurs during query execution
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Explicitly close the Statement object if it was opened
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    // View selected portfolio -------------------------------------------------------------------------------------
+    public static void viewAssets() {
+        String sqlCode = """
+                SELECT ticker, investment_name, investment_type, risk_level, investment_value
+                FROM Investment_products
+                WHERE portfolio_id = ? ;
+                """;
+
+        List<String> tickers = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setString(1, selectedPortfolioId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String ticker = resultSet.getString("ticker");
+                tickers.add(ticker);
+                System.out.println(ticker);
+            }
+
+            if (tickers.isEmpty()) {
+                System.out.println("No securities found for the selected portfolio.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
+
+
+
+
+
+
+
+
+
 
 
 

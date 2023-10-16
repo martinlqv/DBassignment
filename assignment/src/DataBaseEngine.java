@@ -58,10 +58,6 @@ public class DataBaseEngine {
         }
     }
 
-    // Method to print the username of a User object
-    public static void printUser(User createdUser) {
-        System.out.println(createdUser.getUsername());
-    }
 
     // Method to add a User object to the database
     public static void addUser(User user) {
@@ -163,8 +159,8 @@ public class DataBaseEngine {
 
         // Define the SQL query to insert a new portfolio, any name.
         String sqlCode = """
-    INSERT INTO Portfolios (portfolio_name, description, total_value, username)
-    VALUES (?, ?, ?, ?);
+                INSERT INTO Portfolios (portfolio_name, description, total_value, username)
+                VALUES (?, ?, ?, ?);
     """;
 
 
@@ -193,6 +189,25 @@ public class DataBaseEngine {
             }
         }
     }
+
+    public static boolean usernameExists(String username) {
+        String query = "SELECT 1 FROM Users WHERE username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true; // username already exists
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false; // username does not exist
+    }
+
+
+
+
 
 
 

@@ -12,6 +12,10 @@ public class AddSecurity {
         // Get the username of the currently logged-in user from SessionManager
         security.setPortfolioId(DataBaseEngine.getSelectedPortfolioId());
 
+        // Prompt the user to get
+
+
+
         // Prompt the user to enter a portfolio name
         System.out.println("Enter the ticker:");
         String newTicker = scaner.nextLine();

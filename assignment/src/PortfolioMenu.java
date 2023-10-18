@@ -133,11 +133,12 @@ public class PortfolioMenu {
         // Handling user's menu choice
         if(menuNavigation == 1){
             DataBaseEngine.viewAssets();
+            functionMenu();
 
         } else if(menuNavigation == 2) {
             // Call method to view portfolios
-            System.out.println("Under Construction");
             AddSecurity.addSecurityMenu();
+            functionMenu();
 
             //displayPortfolioMenu();
 

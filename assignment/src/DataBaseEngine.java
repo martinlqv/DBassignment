@@ -335,7 +335,13 @@ public class DataBaseEngine {
             while (resultSet.next()) {
                 String ticker = resultSet.getString("ticker");
                 tickers.add(ticker);
-                System.out.println(ticker);
+                String investmentName = resultSet.getString("investment_name");
+                String investmentType = resultSet.getString("investment_type");
+                String riskLevel = resultSet.getString("risk_level");
+                double investmentValue = resultSet.getDouble("investment_value");
+
+                System.out.println(ticker + " " + investmentName + " " + investmentType + " " + riskLevel
+                        + " " + investmentValue);
             }
 
             if (tickers.isEmpty()) {
@@ -346,6 +352,9 @@ public class DataBaseEngine {
             System.err.println("SQL query execution failed: " + e.getMessage());
         }
     }
+
+
+
 
 
 

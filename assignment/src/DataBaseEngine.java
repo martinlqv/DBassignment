@@ -12,6 +12,11 @@ public class DataBaseEngine {
     private static Connection connection = null;
     private static String selectedPortfolioId;
     private static String selectedPortfolioName;
+    private static String selectedTicker;
+    private static String selectedInvestmentName;
+    private static String selectedInvestmentType;
+    private static String selectedRiskLevel;
+    private static Double selectedInvestmentValue;
 
     // Method to establish a database connection
     public static void establishConnection() {
@@ -279,14 +284,14 @@ public class DataBaseEngine {
         return selectedPortfolioName;
     }
 
-    // Add asset ---------------------------------------------------------------------------------------------------
-    public static void addSecurity(Security security) {
+    // Add security ---------------------------------------------------------------------------------------------------
+    /*public static void addSecurity(Security security) {
 
         // Define the SQL query to insert a new portfolio, any name.
         String sqlCode = """
                 INSERT INTO Investment_products (ticker, investment_name, investment_type, risk_level,
-                investment_value, portfolio_id)
-                VALUES (?, ?, ?, ?, ?, ?);
+                investment_value)
+                VALUES (?, ?, ?, ?, ?);
     """;
 
 
@@ -299,7 +304,7 @@ public class DataBaseEngine {
             preparedStatement.setString(3, security.getInvestmentType());
             preparedStatement.setString(4, security.getRiskLevel());
             preparedStatement.setDouble(5, security.getInvestmentValue());
-            preparedStatement.setDouble(6, security.getPortfolioId());
+            //preparedStatement.setDouble(6, security.getPortfolioId());
 
             // Execute the SQL query to insert the new portfolio
             preparedStatement.executeUpdate();
@@ -317,7 +322,7 @@ public class DataBaseEngine {
             }
         }
     }
-
+*/
     // View selected portfolio -------------------------------------------------------------------------------------
     public static void viewAssets() {
         String sqlCode = """
@@ -354,7 +359,127 @@ public class DataBaseEngine {
     }
 
 
+    // Method to select equity -----------------------------------------------------------------------------------------
+    public static void selectSecurity() {
+        String sqlCode = """
+            SELECT ticker, investment_name, investment_type, risk_level, investment_value
+            FROM Investment_products
+            WHERE investment_type = ? ;
+            """;
 
+        List<String> tickers = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setString(1, selectedInvestmentType);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int counter = 1;
+            while (resultSet.next()) {
+                String ticker = resultSet.getString("ticker");
+                tickers.add(ticker);
+
+                System.out.println(counter + ". " + ticker + " | " +
+                        resultSet.getString("investment_name") + " | " +
+                        resultSet.getString("investment_type") + " | " +
+                        resultSet.getString("risk_level") + " | " +
+                        resultSet.getDouble("investment_value"));
+                counter++;
+            }
+
+            if (tickers.isEmpty()) {
+                System.out.println("No securities found.");
+                return;
+            }
+
+            System.out.println("Enter the number of the security you want to select:");
+            Scanner scanner = new Scanner(System.in);
+
+            int selectedNumber = -1;
+            while (selectedNumber < 1 || selectedNumber > tickers.size()) {
+                try {
+                    selectedNumber = scanner.nextInt();
+                    if (selectedNumber < 1 || selectedNumber > tickers.size()) {
+                        System.out.println("Invalid number. Please enter a number between 1 and " + tickers.size());
+                    }
+                } catch (InputMismatchException ime) {
+                    System.out.println("Please enter a valid number.");
+                    scanner.nextLine(); // Clearing the invalid input
+                }
+            }
+
+            resultSet.absolute(selectedNumber); // Move the cursor to the selected row
+            selectedTicker = resultSet.getString("ticker");
+            selectedInvestmentName = resultSet.getString("investment_name");
+            selectedInvestmentType = resultSet.getString("investment_type");
+            selectedRiskLevel = resultSet.getString("risk_level");
+            selectedInvestmentValue = resultSet.getDouble("investment_value");
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
+
+
+    public static void setSelectedInvestmentType(String investmentType) {
+        selectedInvestmentType = investmentType;
+    }
+
+    public static String getSelectedTicker() {
+        return selectedTicker;
+    }
+
+    public static String getSelectedInvestmentName() {
+        return selectedInvestmentName;
+    }
+
+    public static String getSelectedInvestmentType() {
+        return selectedInvestmentType;
+    }
+
+    public static String getSelectedRiskLevel() {
+        return selectedRiskLevel;
+    }
+
+    public static Double getSelectedInvestmentValue() {
+        return selectedInvestmentValue;
+    }
+
+
+
+
+    // Add security ---------------------------------------------------------------------------------------------------
+    public static void addSecurity(Security security) {
+
+        // Define the SQL query to insert a new portfolio, any name.
+        String sqlCode = """
+                INSERT INTO Product_quantity (ticker, portfolio_id, quantity)
+                VALUES (?, ?, ?);
+                """;
+
+
+        Statement statement = null;
+        // Use try-with-resources to automatically close PreparedStatement.
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            // Set the placeholders in the SQL query with actual values.
+            preparedStatement.setString(1, security.getTicker());
+            preparedStatement.setString(2, selectedPortfolioId);
+            preparedStatement.setInt(3, security.getQuantity());
+
+            // Execute the SQL query to insert the new portfolio
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            // Catch and display any SQL exception that occurs during query execution
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Explicitly close the Statement object if it was opened
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
 
 
 

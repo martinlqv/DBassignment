@@ -6,6 +6,7 @@ public class Security {
     private String risk_level;
     private Double investment_value;
     private int portfolio_id;
+    private int quantity;
 
 
     public Security() {
@@ -41,6 +42,11 @@ public class Security {
         this.portfolio_id = portfolio_id;
     }
 
+    // Method to set quantity
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 
 
     // Method to get the ticker
@@ -72,6 +78,11 @@ public class Security {
     // Method to get the portfolio id
     public int getPortfolioId() {
         return portfolio_id;
+    }
+
+    // Method to get quantity
+    public int getQuantity() {
+        return quantity;
     }
 
 

@@ -118,7 +118,7 @@ public class DataBaseEngine {
             try (
                     PreparedStatement preparedStatement = DataBaseEngine.connection.prepareStatement(sqlQuery)) {
 
-                // Set the first parameter in the SQL query (the '?' abv) to the given username
+                // Set the first parameter in query (the '?' abv) to the given username
                 preparedStatement.setString(1, username);
                 try (
                         ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -134,7 +134,7 @@ public class DataBaseEngine {
                     }
                 }
             } catch (SQLException e) {
-                // Catch any SQL exceptions
+                // Catch exceptions
                 System.err.println("Failed to validate credentials: " + e.getMessage());
 
                 // In case of exception, exit the method, return false
@@ -328,8 +328,6 @@ public class DataBaseEngine {
     }
 */
 
-
-
     // View selected portfolio -----------------------------------------------------------------------------------
 
     // IMPLEMENTED THIS AS VIEWSECURITIES
@@ -461,7 +459,7 @@ public class DataBaseEngine {
 
     public static void addSecurity(Security security) {
 
-        // Define the SQL query to insert a new portfolio, any name.
+        //  insert a new portfolio, any name.
         String sqlCode = """
                 INSERT INTO Product_quantity (ticker, portfolio_id, quantity)
                 VALUES (?, ?, ?);
@@ -472,7 +470,7 @@ public class DataBaseEngine {
         // Use try-with-resources to automatically close PreparedStatement.
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
 
-            // Set the placeholders in the SQL query with actual values.
+            // Set the placeholders with actual values.
             preparedStatement.setString(1, security.getTicker());
             preparedStatement.setString(2, selectedPortfolioId);
             preparedStatement.setInt(3, security.getQuantity());
@@ -481,7 +479,7 @@ public class DataBaseEngine {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            // Catch and display any SQL exception that occurs during query execution
+            // Catch and display exception that occurs during execution
             System.err.println("SQL query execution failed: " + e.getMessage());
 
         } finally {
@@ -504,11 +502,11 @@ public class DataBaseEngine {
         String sqlCode = """
         SELECT * FROM Investment_Products_Quantity_View
         WHERE portfolio_id = ?;
-        """;  // Add the WHERE clause to SQL query
+        """;
 
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
-            preparedStatement.setInt(1, currentPortfolioID);  // Set the portfolio ID parameter in SQL query
+            preparedStatement.setInt(1, currentPortfolioID);  // Set the portfolio ID parameter
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -526,7 +524,7 @@ public class DataBaseEngine {
                 String investment_type = resultSet.getString("investment_type");
                 String risk_level = resultSet.getString("risk_level");
                 double investment_value = resultSet.getDouble("investment_value");
-                int portfolio_id = resultSet.getInt("portfolio_id");
+                //int portfolio_id = resultSet.getInt("portfolio_id"); redundant...
                 int quantity = resultSet.getInt("quantity");
 
                 System.out.printf("%-10s %-40s %-15s %-12s %-12.2f %-10d\n",

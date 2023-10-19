@@ -16,10 +16,10 @@ public class SessionManager {
         return currentUsername;
     }
 
-    // Method to log out the current user (clear username)
+    // Method to log out the current user (clear username) + clear the ticker when logging out
     public static void logOut() {
         currentUsername = null;
-        currentTicker = null;  // Optionally clear the ticker when logging out
+        currentTicker = null;
     }
 
     // Method to set the current ticker
@@ -32,7 +32,7 @@ public class SessionManager {
         return currentTicker;
     }
 
-    // Method to clear the current ticker (optional)
+    // Method to clear the current ticker, if NEEDED.
     public static void clearCurrentTicker() {
         currentTicker = null;
     }

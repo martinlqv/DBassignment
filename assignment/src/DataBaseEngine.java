@@ -513,11 +513,11 @@ public class DataBaseEngine {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             // Print column names as the header of the table
-            System.out.printf("%-10s %-40s %-15s %-12s %-12s %-15s %-10s\n",
-                    "Ticker", "Name", "Type", "Risk Level", "Value", "Portfolio ID", "Quantity");
+            System.out.printf("%-10s %-40s %-15s %-12s %-12s %-10s\n",
+                    "Ticker", "Name", "Type", "Risk Level", "Value",  "Quantity");
 
             // Print a line under the header
-            System.out.println("--------- ---------------------------------------- --------------- ------------ ------------ --------------- -----------");
+            System.out.println("--------- ---------------------------------------- --------------- ------------ ------------ -----------");
 
             // Print each row in a formatted manner
             while (resultSet.next()) {
@@ -529,8 +529,8 @@ public class DataBaseEngine {
                 int portfolio_id = resultSet.getInt("portfolio_id");
                 int quantity = resultSet.getInt("quantity");
 
-                System.out.printf("%-10s %-40s %-15s %-12s %-12.2f %-15d %-10d\n",
-                        ticker, investment_name, investment_type, risk_level, investment_value, portfolio_id, quantity);
+                System.out.printf("%-10s %-40s %-15s %-12s %-12.2f %-10d\n",
+                        ticker, investment_name, investment_type, risk_level, investment_value, quantity);
             }
         } catch (SQLException e) {
             System.err.println("SQL query execution failed: " + e.getMessage());

@@ -549,11 +549,11 @@ public class DataBaseEngine {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             // Print column names as the header
-            System.out.printf("\n" + "%-3s %-11s %-13s %-8s %-6s\n",
+            System.out.printf("\n" + "%-3s %-11s %-20s %-11s %-6s\n",
                     "Id", "Portfolio", "Description", "Username", "Value");
 
             // Print a line under the header
-            System.out.println("--- ----------- ------------- -------- ------");
+            System.out.println("--- ----------- -------------------- ----------- ------");
 
             // Print each row in a supercute formatted manner
             while (resultSet.next()) {
@@ -565,7 +565,7 @@ public class DataBaseEngine {
                 String username = resultSet.getString("username");
                 double total_value = resultSet.getDouble("total_value");
 
-                System.out.printf("%-3d %-11s %-13s %-8s %-6.2f\n",
+                System.out.printf("%-3d %-11s %-20s %-11s %-6.2f\n",
                         portfolio_id, portfolio_name, description, username, total_value);
             }
         } catch (SQLException e) {

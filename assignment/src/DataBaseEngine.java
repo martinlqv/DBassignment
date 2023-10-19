@@ -219,7 +219,7 @@ public class DataBaseEngine {
 
 
 
-    // Method to select portfolio -----------------------------------------------------------------------------------------
+    // Method to select portfolio --------------------------------------------------------------------------------------
     public static void selectPortfolio() {
         String sqlCode = """
         SELECT portfolio_id, portfolio_name
@@ -241,8 +241,8 @@ public class DataBaseEngine {
 
                 portfolioIds.add(portfolioId);
                 portfolioNames.put(portfolioId, portfolioName); // Store the name associated with the ID
-
-                System.out.println(counter + ". " + portfolioId + " " + portfolioName);
+                //removed portfolio id from printout, looks confusing. Also displayed upon select = redundant.
+                System.out.println(counter + ". " + portfolioName);
                 counter++;
             }
 
@@ -327,8 +327,7 @@ public class DataBaseEngine {
     public static void viewAssets() {
         String sqlCode = """
                 SELECT ticker, investment_name, investment_type, risk_level, investment_value
-                FROM Investment_products
-                WHERE portfolio_id = ? ;
+                FROM Investment_products;
                 """;
 
         List<String> tickers = new ArrayList<>();
@@ -469,6 +468,7 @@ public class DataBaseEngine {
         } catch (SQLException e) {
             // Catch and display any SQL exception that occurs during query execution
             System.err.println("SQL query execution failed: " + e.getMessage());
+
         } finally {
             // Explicitly close the Statement object if it was opened
             if (statement != null) {

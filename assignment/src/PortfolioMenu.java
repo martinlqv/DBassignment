@@ -19,9 +19,9 @@ public class PortfolioMenu {
                     "---- Portfolios ----\n" +
                             "1. Create\n" +
                             "2. Select\n" +
-                            "3. Update\n" +
-                            "4. Delete\n" +
-                            "5. Exit to Main Menu"
+                           // "3. Update\n" +
+                            //"4. Delete\n" +
+                            "3. Exit to Main Menu"
             );
 
             try {
@@ -29,7 +29,7 @@ public class PortfolioMenu {
                 menuNavigation = scanner.nextInt();
 
                 // Validate menu choice
-                if (menuNavigation >= 1 && menuNavigation <= 5) {
+                if (menuNavigation >= 1 && menuNavigation <= 3) {
                     validInput = true;
 
 
@@ -39,7 +39,7 @@ public class PortfolioMenu {
 
             } catch (InputMismatchException ime) {
                 // Handling invalid input e.g., non-integers
-                System.out.println("Please enter a valid integer between 1 and 5");
+                System.out.println("Please enter a valid integer between 1 and 3");
                 scanner.nextLine();
             }
         } while (!validInput);
@@ -55,17 +55,16 @@ public class PortfolioMenu {
 
         } else if(menuNavigation == 2) {
             // Call method to view portfolios
-            System.out.println("Under Construction");
+            //System.out.println("Under Construction");
             DataBaseEngine.selectPortfolio();
             functionMenu();
+            displayPortfolioMenu();
 
 
-            //displayPortfolioMenu();
-
-        } else if(menuNavigation == 3) {
+       /* } else if(menuNavigation == 3) {
 
             // Call method to update a portfolio
-            System.out.println("Under Construction");
+            System.out.println("Portfolios already up to date!");
             displayPortfolioMenu();
 
 
@@ -76,8 +75,8 @@ public class PortfolioMenu {
             System.out.println("TEST: Logged in: " + currentUsername);
 
             displayPortfolioMenu();
-
-        } else if(menuNavigation == 5) {
+*/
+        } else if(menuNavigation == 3) {
 
             MainMenu.displayMenu(); // Returning to the main menu
 
@@ -97,7 +96,7 @@ public class PortfolioMenu {
 
         // Continuously prompt user until a valid input is received
         do {
-            System.out.println("Selected Portfolio ID: " + DataBaseEngine.getSelectedPortfolioId());
+            System.out.println("\n\nSelected Portfolio ID: " + DataBaseEngine.getSelectedPortfolioId());
             System.out.println("Selected Portfolio Name: " + DataBaseEngine.getSelectedPortfolioName());
             System.out.println(
                     // Options
@@ -107,7 +106,7 @@ public class PortfolioMenu {
                             "3. Update quantity\n" +
                             "4. Delete security\n" +
                             "5. Delete portfolio\n" +
-                            "6. Go pack to the portfolio menu"
+                            "6. Back"
             );
 
             try {
@@ -146,6 +145,8 @@ public class PortfolioMenu {
 
             // Call method to update a portfolio
             System.out.println("Under Construction");
+
+
             displayPortfolioMenu();
 
 
@@ -163,8 +164,10 @@ public class PortfolioMenu {
 
         } else{
 
-            DataBaseEngine.abortConnection();
-            System.exit(0); // Exiting the program
+            //DataBaseEngine.abortConnection();
+            //System.exit(0); // Exiting the program
+            displayPortfolioMenu();
+
         }
 
     }

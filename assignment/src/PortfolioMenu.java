@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
@@ -16,12 +17,12 @@ public class PortfolioMenu {
         do {
             System.out.println(
                     // Options
-                    "---- Portfolios ----\n" +
-                            "1. Create\n" +
+                    "\n---- Portfolios ----\n" +
+                            "1. View\n" +
                             "2. Select\n" +
-                           // "3. Update\n" +
+                            "3. Create\n" +
                             //"4. Delete\n" +
-                            "3. Exit to Main Menu"
+                            "4. Exit to Main Menu"
             );
 
             try {
@@ -29,7 +30,7 @@ public class PortfolioMenu {
                 menuNavigation = scanner.nextInt();
 
                 // Validate menu choice
-                if (menuNavigation >= 1 && menuNavigation <= 3) {
+                if (menuNavigation >= 1 && menuNavigation <= 4) {
                     validInput = true;
 
 
@@ -39,7 +40,7 @@ public class PortfolioMenu {
 
             } catch (InputMismatchException ime) {
                 // Handling invalid input e.g., non-integers
-                System.out.println("Please enter a valid integer between 1 and 3");
+                System.out.println("Please enter a valid integer between 1 and 4");
                 scanner.nextLine();
             }
         } while (!validInput);
@@ -49,9 +50,10 @@ public class PortfolioMenu {
         // Handling user's menu choice
         if(menuNavigation == 1){
 
-            // Call method to create a portfolio
-            AddPortfolio.addPortfolioMenu();
-            displayPortfolioMenu(); //Maybe sub this for immediate portfolio view, and add Assetmenu
+            //System.out.println("View here");
+            DataBaseEngine.viewPortfolios();
+            displayPortfolioMenu();
+
 
         } else if(menuNavigation == 2) {
             // Call method to view portfolios
@@ -61,14 +63,14 @@ public class PortfolioMenu {
             displayPortfolioMenu();
 
 
-       /* } else if(menuNavigation == 3) {
+      } else if(menuNavigation == 3) {
 
-            // Call method to update a portfolio
-            System.out.println("Portfolios already up to date!");
-            displayPortfolioMenu();
+            // Call method to create a portfolio
+            AddPortfolio.addPortfolioMenu();
+            displayPortfolioMenu(); //Maybe sub this for immediate portfolio view, and add Assetmenu
 
 
-        } else if(menuNavigation == 4) {
+        /*  } else if(menuNavigation == 4) {
 
             // Call method to delete a portfolio
             String currentUsername = SessionManager.getCurrentUsername();
@@ -76,7 +78,7 @@ public class PortfolioMenu {
 
             displayPortfolioMenu();
 */
-        } else if(menuNavigation == 3) {
+        } else if(menuNavigation == 4) {
 
             MainMenu.displayMenu(); // Returning to the main menu
 
@@ -131,7 +133,7 @@ public class PortfolioMenu {
 
         // Handling user's menu choice
         if(menuNavigation == 1){
-            DataBaseEngine.viewAssets();
+            DataBaseEngine.viewSecurities();
             functionMenu();
 
         } else if(menuNavigation == 2) {
@@ -144,10 +146,11 @@ public class PortfolioMenu {
         } else if(menuNavigation == 3) {
 
             // Call method to update a portfolio
-            System.out.println("Under Construction");
+            //System.out.println("Under Construction");
+            DataBaseEngine.updateSecurity();
+            functionMenu();
 
 
-            displayPortfolioMenu();
 
 
         } else if(menuNavigation == 4) {
@@ -171,7 +174,5 @@ public class PortfolioMenu {
         }
 
     }
-
-
 
 }

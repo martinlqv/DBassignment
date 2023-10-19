@@ -42,6 +42,8 @@ public class Security {
         this.portfolio_id = portfolio_id;
     }
 
+
+
     // Method to set quantity
     public void setQuantity(int quantity) {
         this.quantity = quantity;
@@ -84,6 +86,8 @@ public class Security {
     public int getQuantity() {
         return quantity;
     }
+
+
 
 
 }

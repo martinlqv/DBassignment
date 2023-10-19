@@ -66,47 +66,14 @@ public class AddSecurity {
         security.setRiskLevel(DataBaseEngine.getSelectedRiskLevel());
         security.setInvestmentValue(DataBaseEngine.getSelectedInvestmentValue());
 
-        // Prompt the user to enter quantity
-        //System.out.println("Enter the quantity:");
-        //int newQuantity = scanner.nextInt(scanner.nextInt());
-        //security.setQuantity(newQuantity);
-
-
-
-
-
-
-/*
-
-        // Prompt the user to enter a portfolio name
-        System.out.println("Enter the ticker:");
-        String newTicker = scanner.nextLine();
-        security.setTicker(newTicker);
-
-        // Prompt the user to enter the security's name
-        System.out.println("Enter the security name:");
-        String newSecurityName = scanner.nextLine();
-        security.setInvestmentName(newSecurityName);
-
-        // Prompt the user to select an investment type
-        System.out.println("Select the type:");
-        String newType = scanner.nextLine();
-        security.setInvestmentType(newType);
-
-        // Prompt the user to select the risk level
-        System.out.println("Select the risk level:");
-        String newRiskLevel = scanner.nextLine();
-        security.setRiskLevel(newRiskLevel);
-
-        // Prompt the user to enter the investment value
-        System.out.println("Enter the investment value:");
-        Double newInvestmentValue = scanner.nextDouble();
-        security.setInvestmentValue(newInvestmentValue);
-*/
+        //Prompt the user to enter quantity
+        System.out.println("Enter the quantity:");
+        int newQuantity = scanner.nextInt();
+        security.setQuantity(newQuantity);
 
 
         // Call the method to add the new Portfolio to the database
-        //DataBaseEngine.addSecurity(security);
+        DataBaseEngine.addSecurity(security);
     }
-
 }
+

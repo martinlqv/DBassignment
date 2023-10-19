@@ -182,6 +182,7 @@ public class DataBaseEngine {
 
             // Execute the SQL query to insert the new portfolio
             preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             // Catch and display any SQL exception that occurs during query execution
             System.err.println("SQL query execution failed: " + e.getMessage());
@@ -197,6 +198,7 @@ public class DataBaseEngine {
         }
     }
 
+
     public static boolean usernameExists(String username) {
         String query = "SELECT 1 FROM Users WHERE username = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -211,10 +213,6 @@ public class DataBaseEngine {
         }
         return false; // username does not exist
     }
-
-
-
-
 
 
 
@@ -284,6 +282,12 @@ public class DataBaseEngine {
         return selectedPortfolioName;
     }
 
+
+
+
+
+
+
     // Add security ---------------------------------------------------------------------------------------------------
     /*public static void addSecurity(Security security) {
 
@@ -323,7 +327,13 @@ public class DataBaseEngine {
         }
     }
 */
-    // View selected portfolio -------------------------------------------------------------------------------------
+
+
+
+    // View selected portfolio -----------------------------------------------------------------------------------
+
+    // IMPLEMENTED THIS AS VIEWSECURITIES
+    /*
     public static void viewAssets() {
         String sqlCode = """
                 SELECT ticker, investment_name, investment_type, risk_level, investment_value
@@ -356,6 +366,8 @@ public class DataBaseEngine {
             System.err.println("SQL query execution failed: " + e.getMessage());
         }
     }
+*/
+
 
 
     // Method to select equity -----------------------------------------------------------------------------------------
@@ -446,6 +458,7 @@ public class DataBaseEngine {
 
 
     // Add security ---------------------------------------------------------------------------------------------------
+
     public static void addSecurity(Security security) {
 
         // Define the SQL query to insert a new portfolio, any name.
@@ -458,13 +471,15 @@ public class DataBaseEngine {
         Statement statement = null;
         // Use try-with-resources to automatically close PreparedStatement.
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+
             // Set the placeholders in the SQL query with actual values.
             preparedStatement.setString(1, security.getTicker());
             preparedStatement.setString(2, selectedPortfolioId);
             preparedStatement.setInt(3, security.getQuantity());
 
-            // Execute the SQL query to insert the new portfolio
+            // Execute
             preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             // Catch and display any SQL exception that occurs during query execution
             System.err.println("SQL query execution failed: " + e.getMessage());
@@ -483,18 +498,153 @@ public class DataBaseEngine {
 
 
 
+    // Method to view securities
+    public static void viewSecurities() {
+        int currentPortfolioID = DataBaseEngine.getSelectedPortfolioId();  // Get the current portfolio ID for the user
+        String sqlCode = """
+        SELECT * FROM Investment_Products_Quantity_View
+        WHERE portfolio_id = ?;
+        """;  // Add the WHERE clause to SQL query
+
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setInt(1, currentPortfolioID);  // Set the portfolio ID parameter in SQL query
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Print column names as the header of the table
+            System.out.printf("%-10s %-40s %-15s %-12s %-12s %-15s %-10s\n",
+                    "Ticker", "Name", "Type", "Risk Level", "Value", "Portfolio ID", "Quantity");
+
+            // Print a line under the header
+            System.out.println("--------- ---------------------------------------- --------------- ------------ ------------ --------------- -----------");
+
+            // Print each row in a formatted manner
+            while (resultSet.next()) {
+                String ticker = resultSet.getString("ticker");
+                String investment_name = resultSet.getString("investment_name");
+                String investment_type = resultSet.getString("investment_type");
+                String risk_level = resultSet.getString("risk_level");
+                double investment_value = resultSet.getDouble("investment_value");
+                int portfolio_id = resultSet.getInt("portfolio_id");
+                int quantity = resultSet.getInt("quantity");
+
+                System.out.printf("%-10s %-40s %-15s %-12s %-12.2f %-15d %-10d\n",
+                        ticker, investment_name, investment_type, risk_level, investment_value, portfolio_id, quantity);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
+
+    // Method to view portfolios.
+
+    public static void viewPortfolios() {
+
+        String currentUsername = SessionManager.getCurrentUsername();  // Get current username from SessionManager
+
+        String sqlCode = "SELECT * FROM Portfolios_total_value WHERE username = ?;";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setString(1, currentUsername);  // Set username parameter
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Print column names as the header
+            System.out.printf("\n" + "%-3s %-11s %-13s %-8s %-6s\n",
+                    "Id", "Portfolio", "Description", "Username", "Value");
+
+            // Print a line under the header
+            System.out.println("--- ----------- ------------- -------- ------");
+
+            // Print each row in a supercute formatted manner
+            while (resultSet.next()) {
+
+                // Column labels from view
+                int portfolio_id = resultSet.getInt("portfolio_id");
+                String portfolio_name = resultSet.getString("portfolio_name");
+                String description = resultSet.getString("description");
+                String username = resultSet.getString("username");
+                double total_value = resultSet.getDouble("total_value");
+
+                System.out.printf("%-3d %-11s %-13s %-8s %-6.2f\n",
+                        portfolio_id, portfolio_name, description, username, total_value);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
 
 
 
+    // Method to update securities-------------------------------------------------------------------------------------
+
+    // REMAINING BUGG; YOU CAN UPDATE NON-EXISTENT SECURITIES.
+
+    public static void updateSecurity() {
+
+        // Initialize scanner
+        Scanner scanner = new Scanner(System.in);
+
+        // list of available securities
+        viewSecurities();
+
+
+        // REMAINING BUGG; YOU CAN UPDATE NON-EXISTENT SECURITIES.
+        // Prompt user for the ticker to update
+        System.out.println("Enter the ticker for the security you want to update:");
+        String selectedTicker = scanner.nextLine();
 
 
 
+        // Store selected ticker in SessionManager
+        SessionManager.setCurrentTicker(selectedTicker);
 
+        // Retrieve selected ticker
+        String currentTicker = SessionManager.getCurrentTicker();
 
+        // Retrieve current portfolio ID.
+        int selectedPortfolioID = DataBaseEngine.getSelectedPortfolioId();
 
+        // Prompt user for new quantity
+        System.out.println("Enter the new quantity for the selected security:");
+        int newQuantity = scanner.nextInt();  // Assume the user will enter an integer
 
+        // update the 'quantity'
+        String sqlCode = """
+    UPDATE Product_quantity
+    SET quantity = ?
+    WHERE portfolio_id = ? AND ticker = ?;
+    """;
 
+        Statement statement = null; // Initialize a Statement object to null
 
+        // Use try-with-resources to ensure the PreparedStatement is closed after use
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+
+            // Populate
+            preparedStatement.setInt(1, newQuantity);          // New quantity to set
+            preparedStatement.setInt(2, selectedPortfolioID);  // ID of the portfolio to update
+            preparedStatement.setString(3, currentTicker);     // Ticker of the security to update
+
+            // Execute
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            // Handle exceptions
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Close the Statement object if it was created, to release resources
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
 
 
 }
+

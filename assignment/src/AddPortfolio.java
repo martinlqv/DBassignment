@@ -27,16 +27,6 @@ public class AddPortfolio {
         portfolio.setDescription(newDescription);
 
 
-        // THIS IS NOT NEEDED
-        // Prompt the user to enter the total value
-        /*
-        System.out.println("Enter the total value:");
-        double newTotalValue = scaner.nextDouble();
-        scaner.nextLine();  // Consume the newline character
-        Portfolio.setTotalValue(newTotalValue);
-        */
-
-
         // Call the method to add the new Portfolio to the database
         DataBaseEngine.addPortfolio(portfolio);
     }

@@ -50,7 +50,6 @@ public class PortfolioMenu {
         // Handling user's menu choice
         if(menuNavigation == 1){
 
-            //System.out.println("View here");
             DataBaseEngine.viewPortfolios();
             displayPortfolioMenu();
 
@@ -74,15 +73,6 @@ public class PortfolioMenu {
             AddPortfolio.addPortfolioMenu();
             displayPortfolioMenu(); //Maybe sub this for immediate portfolio view, and add Assetmenu
 
-
-        /*  } else if(menuNavigation == 4) {
-
-            // Call method to delete a portfolio
-            String currentUsername = SessionManager.getCurrentUsername();
-            System.out.println("TEST: Logged in: " + currentUsername);
-
-            displayPortfolioMenu();
-*/
         } else if(menuNavigation == 4) {
 
             MainMenu.displayMenu(); // Returning to the main menu
@@ -146,12 +136,10 @@ public class PortfolioMenu {
             AddSecurity.addSecurityMenu();
             functionMenu();
 
-            //displayPortfolioMenu();
 
         } else if(menuNavigation == 3) {
 
             // Call method to update a portfolio
-            //System.out.println("Under Construction");
             DataBaseEngine.updateSecurity();
             functionMenu();
 
@@ -161,7 +149,6 @@ public class PortfolioMenu {
         } else if(menuNavigation == 4) {
 
             // Call method to delete a portfolio
-            //String currentUsername = SessionManager.getCurrentUsername();
             DataBaseEngine.deleteSecurity();
             functionMenu();
 
@@ -172,8 +159,6 @@ public class PortfolioMenu {
 
         } else{
 
-            //DataBaseEngine.abortConnection();
-            //System.exit(0); // Exiting the program
             displayPortfolioMenu();
 
         }

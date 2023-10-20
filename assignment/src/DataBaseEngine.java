@@ -533,7 +533,6 @@ public class DataBaseEngine {
 
     // Method to update securities-------------------------------------------------------------------------------------
 
-    // REMAINING BUGG; YOU CAN UPDATE NON-EXISTENT SECURITIES.
 
     public static void updateSecurity() {
 
@@ -562,14 +561,14 @@ public class DataBaseEngine {
 
         // Prompt user for new quantity
         System.out.println("Enter the new quantity for the selected security:");
-        int newQuantity = scanner.nextInt();  // Assume the user will enter an integer
+        int newQuantity = scanner.nextInt();
 
         // update the 'quantity'
         String sqlCode = """
-    UPDATE Product_quantity
-    SET quantity = ?
-    WHERE portfolio_id = ? AND ticker = ?;
-    """;
+            UPDATE Product_quantity
+            SET quantity = ?
+            WHERE portfolio_id = ? AND ticker = ?;
+            """;
 
         Statement statement = null; // Initialize a Statement object to null
 
@@ -624,9 +623,9 @@ public class DataBaseEngine {
 
         // SQL query to delete a security identified by its ticker and portfolio ID
         String sqlCode = """
-    DELETE FROM Product_quantity
-    WHERE portfolio_id = ? AND ticker = ?;
-    """;
+                DELETE FROM Product_quantity
+                WHERE portfolio_id = ? AND ticker = ?;
+                """;
 
         Statement statement = null; // Initialize a Statement object to null
 
@@ -702,9 +701,9 @@ public class DataBaseEngine {
 
         // SQL query to delete a portfolio identified by its ID
         String sqlCode = """
-DELETE FROM Portfolios
-WHERE portfolio_id = ?;
-""";
+                DELETE FROM Portfolios
+                WHERE portfolio_id = ?;
+                """;
 
         Statement statement = null; // Initialize a Statement object to null
 

@@ -459,7 +459,7 @@ public class DataBaseEngine {
 
         String currentUsername = SessionManager.getCurrentUsername();  // Get current username from SessionManager
 
-        String sqlCode = "SELECT * FROM Portfolios_total_value WHERE username = ?;";
+        String sqlCode = "SELECT * FROM Portfolio_Total_Value_With_Empty WHERE username = ?;";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
             preparedStatement.setString(1, currentUsername);  // Set username parameter
@@ -599,7 +599,7 @@ public class DataBaseEngine {
         }
     }
 
-    
+
     // Method to delete securities------------------------------------------------------------------------------------
     public static void deleteSecurity() {
 
@@ -664,37 +664,44 @@ public class DataBaseEngine {
 
 
 
-    // Method to delete a portfolio-----------------------------------------------------------------------------------
+    // Method to delete a portfolio -----------------------------------------------------------------------------------
     public static void deletePortfolio() {
-
         // Initialize scanner for user input
         Scanner scanner = new Scanner(System.in);
 
         // Display the list of available portfolios
         viewPortfoliosEmpty();  // Assume you have a method for this
 
-
-        int selectedPortfolioID = -1;
-        boolean validInput = false;
-
-        // Loop until a valid number is entered
-        while (!validInput) {
-            // Prompt user to enter ID of portfolio they wish to delete
-            System.out.println("Enter the ID for the portfolio you want to delete:");
-
-            try {
-                selectedPortfolioID = scanner.nextInt();
-                validInput = true;  // Exit the loop if the input is valid
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.next();  // Consume the invalid input so the loop can continue
-            }
-        }
+        // Prompt the user to enter the ID of the portfolio they wish to delete
+        System.out.println("Enter the ID for the portfolio you want to delete:");
+        int selectedPortfolioID = scanner.nextInt();  // Assume the user will enter an integer
 
         // Consume the newline character
         scanner.nextLine();
 
-        // SQL query to delete a portfolio by its ID
+        // Confirm delete action
+        System.out.println("Are you sure you want to delete this portfolio? (yes/no)");
+        String confirmation = scanner.nextLine();
+
+        // Check for 'yes' confirmation
+        if (!"yes".equalsIgnoreCase(confirmation)) {
+            System.out.println("Cancelled!");
+            return;
+        }
+
+        // Ask for username and password for verification
+        System.out.println("Enter your username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter your password:");
+        String password = scanner.nextLine();
+
+        // Validate user credentials RE-using validatecredentials way, way, abv.
+        if (!validateCredentials(username, password)) {
+            System.out.println("Incorrect credentials. Portfolio deletion cancelled.");
+            return;
+        }
+
+        // SQL query to delete a portfolio identified by its ID
         String sqlCode = """
 DELETE FROM Portfolios
 WHERE portfolio_id = ?;
@@ -704,11 +711,8 @@ WHERE portfolio_id = ?;
 
         // Use try-with-resources to ensure the PreparedStatement is closed after use
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
-
-            // Populate
             preparedStatement.setInt(1, selectedPortfolioID);  // ID of the portfolio to delete
 
-            // Execute the delete
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected == 0) {
@@ -718,7 +722,6 @@ WHERE portfolio_id = ?;
             }
 
         } catch (SQLException e) {
-            // Handle exceptions
             System.err.println("SQL query execution failed: " + e.getMessage());
         } finally {
             // Explicitly close the Statement object if it was created, to release resources

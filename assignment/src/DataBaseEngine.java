@@ -663,14 +663,13 @@ public class DataBaseEngine {
 
 
 
-
     // Method to delete a portfolio -----------------------------------------------------------------------------------
     public static void deletePortfolio() {
         // Initialize scanner for user input
         Scanner scanner = new Scanner(System.in);
 
         // Display the list of available portfolios
-        viewPortfoliosEmpty();  // Assume you have a method for this
+        viewPortfoliosEmpty();
 
         // Prompt the user to enter the ID of the portfolio they wish to delete
         System.out.println("Enter the ID for the portfolio you want to delete:");
@@ -683,7 +682,7 @@ public class DataBaseEngine {
         System.out.println("Are you sure you want to delete this portfolio? (yes/no)");
         String confirmation = scanner.nextLine();
 
-        // Check for 'yes' confirmation
+        // Check for 'yes' 
         if (!"yes".equalsIgnoreCase(confirmation)) {
             System.out.println("Cancelled!");
             return;

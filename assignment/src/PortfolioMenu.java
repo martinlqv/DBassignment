@@ -56,12 +56,17 @@ public class PortfolioMenu {
 
 
         } else if(menuNavigation == 2) {
-            // Call method to view portfolios
-            //System.out.println("Under Construction");
-            DataBaseEngine.selectPortfolio();
-            functionMenu();
-            displayPortfolioMenu();
+            boolean isPortfolioSelected = DataBaseEngine.selectPortfolio();
+            if (isPortfolioSelected) {
+                functionMenu();
+                displayPortfolioMenu();
 
+            } else {
+
+                System.out.println("Could not proceed as no valid portfolio was selected.");
+                // Maybe return to the main menu or provide other options
+                displayPortfolioMenu();
+            }
 
       } else if(menuNavigation == 3) {
 
@@ -156,14 +161,14 @@ public class PortfolioMenu {
         } else if(menuNavigation == 4) {
 
             // Call method to delete a portfolio
-            String currentUsername = SessionManager.getCurrentUsername();
-            System.out.println("TEST: Logged in: " + currentUsername);
-
-            displayPortfolioMenu();
+            //String currentUsername = SessionManager.getCurrentUsername();
+            DataBaseEngine.deleteSecurity();
+            functionMenu();
 
         } else if(menuNavigation == 5) {
 
-            MainMenu.displayMenu(); // Returning to the main menu
+            DataBaseEngine.deletePortfolio();
+            displayPortfolioMenu(); // Returning to the main menu
 
         } else{
 
@@ -174,5 +179,8 @@ public class PortfolioMenu {
         }
 
     }
+
+
+
 
 }

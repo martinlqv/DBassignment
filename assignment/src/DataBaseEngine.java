@@ -218,12 +218,13 @@ public class DataBaseEngine {
 
 
     // Method to select portfolio --------------------------------------------------------------------------------------
-    public static void selectPortfolio() {
+    public static boolean selectPortfolio() {
         String sqlCode = """
         SELECT portfolio_id, portfolio_name
         FROM Portfolios
         WHERE username = ? ;
         """;
+
 
         List<String> portfolioIds = new ArrayList<>();
         Map<String, String> portfolioNames = new HashMap<>(); // Map to associate each ID with its name
@@ -246,7 +247,7 @@ public class DataBaseEngine {
 
             if (portfolioIds.isEmpty()) {
                 System.out.println("No portfolios found for the user.");
-                return;
+                return false; // No portfolios found
             }
 
             System.out.println("Enter the number of the portfolio you want to update:");
@@ -267,9 +268,11 @@ public class DataBaseEngine {
 
             selectedPortfolioId = portfolioIds.get(selectedNumber - 1);
             selectedPortfolioName = portfolioNames.get(selectedPortfolioId); // Get the name using the selected ID
+            return true; // Successful portfolio selection
 
         } catch (SQLException e) {
             System.err.println("SQL query execution failed: " + e.getMessage());
+            return false; // SQL error
         }
     }
 
@@ -281,90 +284,6 @@ public class DataBaseEngine {
     public static String getSelectedPortfolioName() {
         return selectedPortfolioName;
     }
-
-
-
-
-
-
-
-    // Add security ---------------------------------------------------------------------------------------------------
-    /*public static void addSecurity(Security security) {
-
-        // Define the SQL query to insert a new portfolio, any name.
-        String sqlCode = """
-                INSERT INTO Investment_products (ticker, investment_name, investment_type, risk_level,
-                investment_value)
-                VALUES (?, ?, ?, ?, ?);
-    """;
-
-
-        Statement statement = null;
-        // Use try-with-resources to automatically close PreparedStatement.
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
-            // Set the placeholders in the SQL query with actual values.
-            preparedStatement.setString(1, security.getTicker());
-            preparedStatement.setString(2, security.getInvestmentName());
-            preparedStatement.setString(3, security.getInvestmentType());
-            preparedStatement.setString(4, security.getRiskLevel());
-            preparedStatement.setDouble(5, security.getInvestmentValue());
-            //preparedStatement.setDouble(6, security.getPortfolioId());
-
-            // Execute the SQL query to insert the new portfolio
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            // Catch and display any SQL exception that occurs during query execution
-            System.err.println("SQL query execution failed: " + e.getMessage());
-        } finally {
-            // Explicitly close the Statement object if it was opened
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    System.err.println("Failed to close statement: " + e.getMessage());
-                }
-            }
-        }
-    }
-*/
-
-    // View selected portfolio -----------------------------------------------------------------------------------
-
-    // IMPLEMENTED THIS AS VIEWSECURITIES
-    /*
-    public static void viewAssets() {
-        String sqlCode = """
-                SELECT ticker, investment_name, investment_type, risk_level, investment_value
-                FROM Investment_products;
-                """;
-
-        List<String> tickers = new ArrayList<>();
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
-            preparedStatement.setString(1, selectedPortfolioId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                String ticker = resultSet.getString("ticker");
-                tickers.add(ticker);
-                String investmentName = resultSet.getString("investment_name");
-                String investmentType = resultSet.getString("investment_type");
-                String riskLevel = resultSet.getString("risk_level");
-                double investmentValue = resultSet.getDouble("investment_value");
-
-                System.out.println(ticker + " " + investmentName + " " + investmentType + " " + riskLevel
-                        + " " + investmentValue);
-            }
-
-            if (tickers.isEmpty()) {
-                System.out.println("No securities found for the selected portfolio.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("SQL query execution failed: " + e.getMessage());
-        }
-    }
-*/
 
 
 
@@ -536,7 +455,6 @@ public class DataBaseEngine {
     }
 
     // Method to view portfolios.
-
     public static void viewPortfolios() {
 
         String currentUsername = SessionManager.getCurrentUsername();  // Get current username from SessionManager
@@ -573,6 +491,44 @@ public class DataBaseEngine {
         }
     }
 
+
+    // Method to view portfolios using left joined view, aka. including empty portfolios.
+
+    public static void viewPortfoliosEmpty() {
+
+        String currentUsername = SessionManager.getCurrentUsername();  // Get current username from SessionManager
+
+        String sqlCode = "SELECT * FROM Portfolio_Total_Value_With_Empty WHERE username = ?;";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+            preparedStatement.setString(1, currentUsername);  // Set username parameter
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Print column names as the header
+            System.out.printf("\n" + "%-3s %-11s %-20s %-11s %-6s\n",
+                    "Id", "Portfolio", "Description", "Username", "Value");
+
+            // Print a line under the header
+            System.out.println("--- ----------- -------------------- ----------- ------");
+
+            // Print each row in a supercute formatted manner
+            while (resultSet.next()) {
+
+                // Column labels from view
+                int portfolio_id = resultSet.getInt("portfolio_id");
+                String portfolio_name = resultSet.getString("portfolio_name");
+                String description = resultSet.getString("description");
+                String username = resultSet.getString("username");
+                double total_value = resultSet.getDouble("total_value");
+
+                System.out.printf("%-3d %-11s %-20s %-11s %-6.2f\n",
+                        portfolio_id, portfolio_name, description, username, total_value);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        }
+    }
 
 
     // Method to update securities-------------------------------------------------------------------------------------
@@ -642,6 +598,140 @@ public class DataBaseEngine {
             }
         }
     }
+
+    
+    // Method to delete securities------------------------------------------------------------------------------------
+    public static void deleteSecurity() {
+
+        // Initialize scanner for user input
+        Scanner scanner = new Scanner(System.in);
+
+        // Display the list of available securities
+        viewSecurities();
+
+        // Prompt the user to enter the ticker of the security they wish to delete
+        System.out.println("Enter the ticker for the security you want to delete:");
+        String selectedTicker = scanner.nextLine();
+
+        // Store the selected ticker in SessionManager for tracking
+        SessionManager.setCurrentTicker(selectedTicker);
+
+        // Retrieve the currently selected ticker from SessionManager
+        String currentTicker = SessionManager.getCurrentTicker();
+
+        // Retrieve the currently selected portfolio ID
+        int selectedPortfolioID = DataBaseEngine.getSelectedPortfolioId();
+
+        // SQL query to delete a security identified by its ticker and portfolio ID
+        String sqlCode = """
+    DELETE FROM Product_quantity
+    WHERE portfolio_id = ? AND ticker = ?;
+    """;
+
+        Statement statement = null; // Initialize a Statement object to null
+
+        // Use try-with-resources to ensure the PreparedStatement is closed after use
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+
+            // Populate the SQL query placeholders with specific values
+            preparedStatement.setInt(1, selectedPortfolioID);  // ID of the portfolio from which to delete
+            preparedStatement.setString(2, currentTicker);     // Ticker of the security to delete
+
+            // Execute the SQL query to delete the security
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Security not found. No rows deleted.");
+            } else {
+                System.out.println("Security deleted successfully.");
+            }
+
+        } catch (SQLException e) {
+            // Handle any SQL exceptions that may occur during query execution
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Explicitly close the Statement object if it was created, to release resources
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
+
+
+    // Method to delete a portfolio-----------------------------------------------------------------------------------
+    public static void deletePortfolio() {
+
+        // Initialize scanner for user input
+        Scanner scanner = new Scanner(System.in);
+
+        // Display the list of available portfolios
+        viewPortfoliosEmpty();  // Assume you have a method for this
+
+
+        int selectedPortfolioID = -1;
+        boolean validInput = false;
+
+        // Loop until a valid number is entered
+        while (!validInput) {
+            // Prompt user to enter ID of portfolio they wish to delete
+            System.out.println("Enter the ID for the portfolio you want to delete:");
+
+            try {
+                selectedPortfolioID = scanner.nextInt();
+                validInput = true;  // Exit the loop if the input is valid
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();  // Consume the invalid input so the loop can continue
+            }
+        }
+
+        // Consume the newline character
+        scanner.nextLine();
+
+        // SQL query to delete a portfolio by its ID
+        String sqlCode = """
+DELETE FROM Portfolios
+WHERE portfolio_id = ?;
+""";
+
+        Statement statement = null; // Initialize a Statement object to null
+
+        // Use try-with-resources to ensure the PreparedStatement is closed after use
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCode)) {
+
+            // Populate
+            preparedStatement.setInt(1, selectedPortfolioID);  // ID of the portfolio to delete
+
+            // Execute the delete
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Portfolio not found. No rows deleted.");
+            } else {
+                System.out.println("Portfolio deleted successfully.");
+            }
+
+        } catch (SQLException e) {
+            // Handle exceptions
+            System.err.println("SQL query execution failed: " + e.getMessage());
+        } finally {
+            // Explicitly close the Statement object if it was created, to release resources
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close statement: " + e.getMessage());
+                }
+            }
+        }
+    }
+
 
 
 }
